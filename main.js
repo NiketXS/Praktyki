@@ -17,6 +17,11 @@ window.addEventListener("load",()=>{
             this.ySpeed=0
             this.weight=1
         }
+        isOnGround(){
+            return this.y >= this.gameHeight - this.height
+             
+        }
+
         draw(context){
             context.fillStyle = "red"
             context.fillRect(this.x,this.y,this.width,this.height)
@@ -24,39 +29,40 @@ window.addEventListener("load",()=>{
             
         }
         update(input){
-            if(input.keys.includes("ArrowRight")){
+            if(input.keys.includes("d")){
                 this.xSpeed = 5
-            } else if (input.keys.includes("ArrowLeft")){
+            } else if (input.keys.includes("a")){
                 this.xSpeed = -5
-            } else if (input.keys.includes("ArrowUp") && this.isOnGround()){
-                this.ySpeed = -32
-            }
-                else {
+            } else {
                 this.xSpeed=0
             }
             this.x += this.xSpeed
-            this.y += this.ySpeed 
+           
+            if (input.keys.includes("w")){
+                this.ySpeed = -32 
+            }else{
+                this.ySpeed = 0
+            }
+            if(this.x<0) {        // Border start
+                this.x = 0
+            }else if(this.x>this.gameWidth - this.width){
+                this.x = this.gameWidth - this.width
+            }                     // Border end
             if(!this.isOnGround()){
                 this.ySpeed = this.ySpeed + this.weight
                 this.weight++ 
-            } else {
-                this.ySpeed = 0 
+            } else if(this.isOnGround()) {
                 this.weight = 1
             }
-        }
-        isOnGround(){
-            return this.y >= this.gameHeight - this.height
-             
-        }
-            
-                 
-        
+            this.y += this.ySpeed
+
+        }      
     } 
     class InputHandler {
         constructor() {
             this.keys = [] 
             document.body.addEventListener("keydown", (e) => {
-                if((e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") && this.keys.indexOf(e.key) === -1 ) {
+                if((e.key === "w" || e.key === "a" || e.key === "d") && this.keys.indexOf(e.key) === -1 ) {
                     this.keys.push(e.key)
                     console.log(this.keys)
                 }
@@ -64,7 +70,7 @@ window.addEventListener("load",()=>{
          
             })    
             document.body.addEventListener("keyup", (e) => {
-                if((e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") && this.keys.indexOf(e.key) !== -1) {
+                if((e.key === "w" || e.key === "a" || e.key === "d") && this.keys.indexOf(e.key) !== -1) {
                     this.keys.splice(this.keys.indexOf(e.key),1)
                     console.log(this.keys)
                 }
