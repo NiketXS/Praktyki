@@ -13,7 +13,9 @@ window.addEventListener("load",()=>{
             this.x = 100
             this.y = this.gameHeight - this.width
             this.image = document.getElementById("player")
-            this.speed=0
+            this.xSpeed=0
+            this.ySpeed=0
+            this.weight=1
         }
         draw(context){
             context.fillStyle = "red"
@@ -23,47 +25,55 @@ window.addEventListener("load",()=>{
         }
         update(input){
             if(input.keys.includes("ArrowRight")){
-                this.speed = 5
+                this.xSpeed = 5
             } else if (input.keys.includes("ArrowLeft")){
-                this.speed = -5
+                this.xSpeed = -5
+            } else if (input.keys.includes("ArrowUp") && this.isOnGround()){
+                this.ySpeed = -32
             }
                 else {
-                this.speed=0
+                this.xSpeed=0
             }
-            this.x += this.speed
-            
+            this.x += this.xSpeed
+            this.y += this.ySpeed 
+            if(!this.isOnGround()){
+                this.ySpeed = this.ySpeed + this.weight
+                this.weight++ 
+            } else {
+                this.ySpeed = 0 
+                this.weight = 1
+            }
         }
+        isOnGround(){
+            return this.y >= this.gameHeight - this.height
+             
+        }
+            
+                 
+        
     } 
-    class InputHandler  {
+    class InputHandler {
         constructor() {
-            this.keys=[]
-            document.addEventListener("keydown", e=>{
-                if(e.key === "ArrowRight" ) {
-                    console.log(e.key +" nasiścnięte") 
+            this.keys = [] 
+            document.body.addEventListener("keydown", (e) => {
+                if((e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") && this.keys.indexOf(e.key) === -1 ) {
                     this.keys.push(e.key)
                     console.log(this.keys)
                 }
-                if(e.key=== "ArrowLeft") {
-                    this.keys.push(e.key)
-                }
-            })
-
-            document.addEventListener("keyup", e=>{
-                if(e.key === "ArrowRight") {
-                    console.log(e.key +" puszczone")
-                    this.keys.splice(0,1)
-                }
-                if(e.key ==="ArrowLeft"){
-                    this.keys.splice(0,1)
+            
+         
+            })    
+            document.body.addEventListener("keyup", (e) => {
+                if((e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") && this.keys.indexOf(e.key) !== -1) {
+                    this.keys.splice(this.keys.indexOf(e.key),1)
+                    console.log(this.keys)
                 }
             })
             
-            
-            
-            //eventListener który doda do keys naciśnięty klawisz, i ev.Listener który usunie klawisz który puścisz.
-            //"onkeydown","onkeyup"
         }
-        
+        // Eventlistener który doda do keys naciśnięty klawisz 
+        // Eventlistener który usunie klawisz który puścisz
+        // "onkeydown" "onkeyup" 
     }
     const input = new InputHandler()
     const player = new Player(canvas.height,canvas.width)
