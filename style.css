@@ -16,3 +16,7 @@
     left:50%;
     transform: translate(-50%,-50%);
 }
+#debug{
+    text-align: center;
+    width: 100%;
+}
